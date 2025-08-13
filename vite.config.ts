@@ -12,7 +12,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8081',
+        target: 'http://agilidade-api.phbf.com.br',
         changeOrigin: true,
       },
     },

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const API_URL = 'http://localhost:8081/api/integrar';
+const API_URL = 'http://agilidade-api.phbf.com.br/api/integrar';
 
 const EMPRESAS = [
   { numero: 1, cnpj: "05.411.783/0001-10 Agilidade" },
