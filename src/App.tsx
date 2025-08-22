@@ -12,6 +12,7 @@ const EMPRESAS = [
 const App: React.FC = () => {
   const [link, setLink] = useState('');
   const [selectedEmpresa, setSelectedEmpresa] = useState(1);
+  const [numCad, setNumCad] = useState('');
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,10 +28,15 @@ const App: React.FC = () => {
       }
       const id = match[1];
 
+      const payload: any = { id, numEmp: selectedEmpresa.toString() };
+      if (numCad.trim()) {
+        payload.numCad = numCad.trim();
+      }
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, numEmp: selectedEmpresa.toString() }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -75,6 +81,20 @@ const App: React.FC = () => {
         </div>
 
         <div className="mb-4">
+          <label htmlFor="numCad" className="block text-sm font-medium text-gray-700 mb-2">
+            Número de Cadastro
+          </label>
+          <input
+            id="numCad"
+            type="text"
+            value={numCad}
+            onChange={(e) => setNumCad(e.target.value)}
+            placeholder="Digite o número de cadastro"
+            className="border border-gray-300 rounded p-2 w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+
+        <div className="mb-4">
           <label htmlFor="link" className="block text-sm font-medium text-gray-700 mb-2">
             Link do Contrato
           </label>
@@ -100,7 +120,9 @@ const App: React.FC = () => {
 
         {result && (
           <pre className="mt-4 bg-gray-100 p-2 rounded text-sm overflow-x-auto">
-            {JSON.stringify(result, null, 2)}
+            Numero do contrato: {result.contratoId}
+            Numero de cadastro: {result.numCad}
+            {result.pisValido? 'PIS valido' : 'PIS invalido'}
           </pre>
         )}
         {error && <p className="mt-4 text-red-500">{error}</p>}
