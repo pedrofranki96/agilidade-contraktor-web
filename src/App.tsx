@@ -122,7 +122,8 @@ const App: React.FC = () => {
           <pre className="mt-4 bg-gray-100 p-2 rounded text-sm overflow-x-auto">
             <div>Numero do contrato: {result.contratoId}</div>
             <div>Numero de cadastro: {result.numCad}</div>
-            <div>{result.pisValido? 'PIS valido' : 'PIS invalido'}</div>
+            <div>{result.error? result.error : ''}</div>
+            <div>{result.pisValido? '' : 'PIS invalido'}</div>
           </pre>
         )}
         {error && <p className="mt-4 text-red-500">{error}</p>}
