@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { AuthModal } from './components/AuthModal';
+import { authService } from './services/auth';
 
 const API_URL = 'https://agilidade-api.phbf.com.br/api/integrar';
 
@@ -16,6 +18,19 @@ const App: React.FC = () => {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const isAuth = authService.isAuthenticated();
+      setIsAuthenticated(isAuth);
+      if (!isAuth) {
+        setShowAuthModal(true);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,9 +48,18 @@ const App: React.FC = () => {
         payload.numCad = numCad.trim();
       }
 
+      const token = authService.getToken();
+      if (!token) {
+        setShowAuthModal(true);
+        throw new Error('Autenticação necessária');
+      }
+
       const response = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(payload),
       });
 
@@ -54,8 +78,17 @@ const App: React.FC = () => {
     }
   };
 
+  const handleAuthenticated = () => {
+    setIsAuthenticated(true);
+    setShowAuthModal(false);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <AuthModal
+        isOpen={showAuthModal}
+        onAuthenticated={handleAuthenticated}
+      />
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded shadow-md w-full max-w-md"
