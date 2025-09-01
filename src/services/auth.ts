@@ -1,5 +1,5 @@
-import axios from 'axios';
 import Cookies from 'js-cookie';
+import { api } from './api';
 
 const AUTH_TOKEN_KEY = 'auth_token';
 const COOKIE_OPTIONS = {
@@ -11,7 +11,7 @@ const COOKIE_OPTIONS = {
 export const authService = {
   async login(password: string): Promise<boolean> {
     try {
-      const response = await axios.post('/auth/login', { password });
+      const response = await api.post('/auth/login', { password });
       const { access_token } = response.data;
       
       if (access_token) {

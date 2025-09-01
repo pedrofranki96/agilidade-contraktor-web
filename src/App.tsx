@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthModal } from './components/AuthModal';
 import { authService } from './services/auth';
-
-const API_URL = 'https://agilidade-api.phbf.com.br/api/integrar';
+import { api } from './services/api';
 
 const EMPRESAS = [
   { numero: 1, cnpj: "05.411.783/0001-10 Agilidade" },
@@ -54,20 +53,9 @@ const App: React.FC = () => {
         throw new Error('Autenticação necessária');
       }
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await api.post('api/integrar', payload);
 
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-
-      const data = await response.json();
+      const { data } = response;
       setResult(data);
       setError(null);
     } catch (err: any) {
